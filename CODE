@@ -1,0 +1,710 @@
+// create a Card Constructor
+function Card(url, open, matched) {
+  this.url = url;
+  this.open = open;
+  this.matched = matched;
+}<h1>Hello from the homepage!</h1> 
+  35  
+index.html
+@@ -11,22 +11,23 @@
+  <body>
+
+    <div class="container" ng-app='my-app' ng-controller="MemoryController">
+      <div>
+        <div id="message-div">
+          <h2 ng-model="message" id="message">
+            <span>Moves: {{deck.moves}}</span>
+            <span>Matches: {{deck.matches}}</span>
+          </h2>
+          <h2 id="winBanner" ng-show="deck.won">You won in {{deck.moves}} moves!</h2>
+        </div>
+
+      <div id="message-div">
+        <h2 ng-model="message" id="message">
+          <span>Moves: {{deck.moves}}</span>
+          <span>Matches: {{deck.matches}}</span>
+        </h2>
+        <h2 id="winBanner" ng-show="deck.won">You won in {{deck.moves}} moves!</h2>
+      </div>
+
+      <div class="levels">
+        <p>
+          Choose a level:
+        </p>
+        <button class="levelBtn" type="button" ng-click="deck.generateCards(8)" name="button">Easy</button>
+        <button class="levelBtn" type="button" ng-click="deck.generateCards(16)" name="button">Normal</button>
+        <button class="levelBtn" type="button" ng-click="deck.generateCards(24)" name="button">Pro</button>
+        <div class="levels">
+          <h3>
+            Choose a level:
+          </h3>
+          <button class="levelBtn" type="button" ng-click="deck.generateCards(8)" name="button">Easy</button>
+          <button class="levelBtn" type="button" ng-click="deck.generateCards(16)" name="button">Normal</button>
+          <button class="levelBtn" type="button" ng-click="deck.generateCards(24)" name="button">Pro</button>
+        </div>
+      </div>
+
+      <div class="cards clear">
+@@ -35,12 +36,12 @@ <h2 id="winBanner" ng-show="deck.won">You won in {{deck.moves}} moves!</h2>
+            <img class="monster" src="{{card.url}}" alt=""  />
+          </div>
+          <div class="back">
+            <img class="logo" src="assets/logo.png"  alt=""  />
+            <img class="logo" src="assets/pokemon_back_image.png"  alt=""  />
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- end of container div -->
+
+  </body>
+</html>
+</html> 
+  4  
+memorygame.js
+@@ -72,7 +72,7 @@ Deck.prototype.generateCards = function(numCards) {
+
+  for(var j = 0; j < 2; j++) {
+    for (var i = 1; i <= (numCards / 2); i++) {
+      var url = "assets/monsters-" + i + ".png"
+      var url = "assets/pokemon" + i + ".png"
+      cards.push(new Card(url, false, false));
+    };
+  }
+@@ -85,4 +85,4 @@ Deck.prototype.generateCards = function(numCards) {
+    this.currentCards.push(cards[randomIndex]);
+    cards.splice(randomIndex, 1);
+  }
+}
+} 
+ 12  
+playing_level.html
+@@ -0,0 +1,12 @@
+<h1>Easy</h1>
+<p>{{deck.currentCards}}</p>
+<div class="cards clear">
+  <div ng-repeat="card in deck.currentCards" ng-click="revealCard(card)" ng-class="{open: card.open}" class="card">
+    <div class="front">
+      <img class="monster" src="{{card.url}}" alt=""  />
+    </div>
+    <div class="back">
+      <img class="logo" src="assets/pokemon_back_image.png"  alt=""  />
+    </div>
+  </div>
+</div>
+  49  
+style.css
+@@ -3,10 +3,15 @@
+*************************************/
+body {
+  font-family: sans-serif;
+  /*background-color: #f44336;*/
+  background-image: url('assets/red_pokeball.png');
+  /*background-repeat: no-repeat;*/
+  height: 100%;
+  /*background-size: cover;*/
+}
+.container {
+  margin: auto;
+  max-width: 700px;
+  max-width: 600px;
+}
+
+.clear:before, .clear:after {
+@@ -17,6 +22,15 @@ body {
+.clear:after {
+  clear: both;
+}
+/*************************************
+            CARD STYLING
+*************************************/
+.quarter {
+  width: 25%;
+}
+.fifth {
+  width: 20%;
+}
+/*************************************
+          TEXT STYLING
+*************************************/
+@@ -39,7 +53,6 @@ p {
+.levels {
+  text-align: center;
+  margin-bottom: .5em;
+  padding-top: .5em;
+}
+.levelBtn {
+  background: #000;
+@@ -49,12 +62,14 @@ p {
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 1em;
+}
+.levelBtn:focus {
+  outline: none;
+}
+.levelBtn:hover {
+  background: darkblue;
+  background: yellow;
+  color: #000;
+  transition: 0.3s;
+}
+/*************************************
+@@ -78,20 +93,26 @@ p {
+}
+
+.card .front .monster {
+  height: 100%;
+  width: 100%;
+  height: 65%;
+  width: 80%;
+  margin-top: 20%;
+  margin-left: 10%;
+}
+
+.card .back .logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.card .front, .card .back {
+  backface-visibility: hidden;
+  transition: 0.6s;
+  border-radius: 5px;
+}
+
+.card .front {
+@@ -113,6 +134,15 @@ p {
+/*************************************
+              MEDIA QUERIES
+*************************************/
+@media screen and (min-width: 450px) {
+  .card {
+    width: 20%;
+    height: 140px;
+  }
+  .card .front, .card .back {
+    height: 140px;
+  }
+}
+@media screen and (min-width: 600px) {
+  h2 span:first-child {
+    float: left;
+@@ -123,4 +153,11 @@ p {
+  #message-div {
+    height: 40px;
+  }
+}
+  .card {
+    width: 16.6666667%;
+    height: 150px;
+  }
+  .card .front, .card .back {
+    height: 150px;
+  }
+  <!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Memory Game</title>
+    <link rel="stylesheet" href="style.css" media="screen" title="no title">
+    <script src="angular.js">  </script>
+    <script src="memorygame.js"></script>
+  </head>
+  <body>
+
+    <div class="container" ng-app='my-app' ng-controller="MemoryController">
+
+      <div id="message-div">
+        <h2 ng-model="message" id="message">Moves: {{deck.moves}} matches: {{deck.matches}}</h2>
+        <h2 id="winBanner" ng-show="deck.won">You won in {{deck.moves}} moves!</h2>
+      </div>
+
+      <div class="levels">
+        <p>
+          Choose a level:
+        </p>
+        <button class="levelBtn" type="button" ng-click="deck.generateCards(8)" name="button">Easy</button>
+        <button class="levelBtn" type="button" ng-click="deck.generateCards(14)" name="button">Normal</button>
+        <button class="levelBtn" type="button" ng-click="deck.generateCards(20)" name="button">Pro</button>
+      </div>
+
+      <div class="cards clear">
+        <div ng-repeat="card in deck.currentCards" ng-click="revealCard(card)" ng-class="{open: card.open}" class="card">
+          <div class="front">
+            <img class="monster" src="{{card.url}}" alt=""  />
+          </div>
+          <div class="back">
+            <img class="logo" src="assets/logo.png"  alt=""  />
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- end of container div -->
+
+  </body>
+</html>
+ 88  
+memorygame.js
+@@ -0,0 +1,88 @@
+var app= angular.module('my-app', []);
+app.controller('MemoryController', function($scope, $timeout) {
+  $scope.deck = new Deck();
+  $scope.firstCard = null;
+  $scope.secondCard = null;
+  $scope.firstState = true;
+  $scope.gameInPlay = true;
+  $scope.deck.moves = 0;
+  $scope.deck.matches = 0;
+  $scope.deck.won = false;
+
+  $scope.revealCard = function(card) {
+    if ((card.matched === false) && ($scope.gameInPlay === true)) {
+      if ($scope.firstState === true) {
+        card.open = true;
+        $scope.firstCard = card;
+        $scope.firstState = null;
+      } else if ($scope.firstCard['$$hashKey'] !== card['$$hashKey']) {
+        card.open = true;
+        $scope.secondCard = card;
+        $scope.deck.moves += 1;
+        if ($scope.firstCard.url === $scope.secondCard.url) {
+            $scope.firstCard.open = true;
+            $scope.secondCard.open = true;
+            $scope.firstCard.matched = true;
+            $scope.secondCard.matched = true;
+            $scope.deck.matches += 1;
+            if ($scope.deck.matches === ($scope.deck.currentCards.length / 2)) {
+              $scope.deck.won = true;
+              console.log($scope.deck.matches);
+              console.log($scope.deck.currentCards.length);
+            }
+        } else {
+          $timeout(function() {
+            $scope.gameInPlay = true;
+            $scope.firstCard.open = false;
+            $scope.secondCard.open = false;
+          }, 500);
+        }
+        $scope.firstState = true;
+        $scope.gameInPlay = false;
+        $timeout(function() {
+          $scope.gameInPlay = true;
+          $scope.firstCard = null;
+          $scope.secondCard = null;
+        }, 500);
+      }
+    }
+  }
+});
+
+function Card(url, open, matched) {
+  this.url = url;
+  this.open = open;
+  this.matched = matched;
+}
+
+function Deck() {
+  this.currentCards = [];
+  this.generateCards();
+  this.moves = 0;
+  this.matches = 0;
+  this.won = false;
+}
+
+Deck.prototype.generateCards = function(numCards) {
+  var cards = [];
+  this.currentCards = [];
+  this.moves = 0;
+  this.matches = 0;
+  this.won = false;
+
+  for(var j = 0; j < 2; j++) {
+    for (var i = 1; i <= (numCards / 2); i++) {
+      var url = "assets/monsters-" + i + ".png"
+      cards.push(new Card(url, false, false));
+    };
+  }
+
+  var length = cards.length;
+
+  while (this.currentCards.length != length) {
+    var randomIndex = Math.floor(Math.random() * cards.length);
+
+    this.currentCards.push(cards[randomIndex]);
+    cards.splice(randomIndex, 1);
+  }
+}
+ 107  
+style.css
+@@ -0,0 +1,107 @@
+/*************************************
+          CONTAINER STYLING
+*************************************/
+body {
+  font-family: sans-serif;
+}
+.container {
+  margin: auto;
+  max-width: 700px;
+}
+
+.clear:before, .clear:after {
+  content: "";
+  display: table;
+}
+
+.clear:after {
+  clear: both;
+}
+/*************************************
+          TEXT STYLING
+*************************************/
+h2 {
+  margin: .4em 0;
+}
+#winBanner {
+  color: purple;
+}
+#message-div {
+  height: 60px;
+  text-align: center;
+}
+/*************************************
+              BUTTONS
+*************************************/
+p {
+  margin: 10px 0;
+}
+.levels {
+  text-align: center;
+  margin-bottom: .5em;
+  padding-top: .5em;
+}
+.levelBtn {
+  background: #000;
+  padding: 5px 8px;
+  border-radius: 4px;
+  border: none;
+  color: #fff;
+}
+.levelBtn:focus {
+  outline: none;
+}
+/*************************************
+    CARD ANIMATIONS => FLIPPING
+*************************************/
+.card {
+  perspective: 2000px;
+  position: relative;
+  width: 20%;
+  height: 100px;
+  float: left;
+}
+
+.card .front, .card .back {
+  width: 100%;
+  height: 100px;
+  border: 1px solid black;
+  position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.card .front .monster {
+  height: 100%;
+  width: 100%;
+}
+
+.card .back .logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.card .front, .card .back {
+  backface-visibility: hidden;
+  transition: 0.6s;
+}
+
+.card .front {
+  transform: rotateY(180deg);
+}
+
+.card .back {
+  transform: rotateY(0deg);
+}
+
+.card.open .back {
+  transform: rotateY(180deg);
+}
+
+.card.open .front {
+  transform: rotateY(0deg);
+}body>
+
+    <div class="container" ng-app='my-app' ng-controller="MemoryController">
+      <div>
+        <div id="message-div">
+          <h2 ng-model="message" id="message">
+            <span>Moves: {{deck.moves}}</span>
+            <span>Matches: {{deck.matches}}</span>
+          </h2>
+          <h2 id="winBanner" ng-show="deck.won">You won in {{deck.moves}} moves!</h2>
+        </div>
+
+      <div id="message-div">
+        <h2 ng-model="message" id="message">
+          <span>Moves: {{deck.moves}}</span>
+          <span>Matches: {{deck.matches}}</span>
+        </h2>
+        <h2 id="winBanner" ng-show="deck.won">You won in {{deck.moves}} moves!</h2>
+      </div>
+
+      <div class="levels">
+        <p>
+          Choose a level:
+        </p>
+        <button class="levelBtn" type="button" ng-click="deck.generateCards(8)" name="button">Easy</button>
+        <button class="levelBtn" type="button" ng-click="deck.generateCards(16)" name="button">Normal</button>
+        <button class="levelBtn" type="button" ng-click="deck.generateCards(24)" name="button">Pro</button>
+        <div class="levels">
+          <h3>
+            Choose a level:
+          </h3>
+          <button class="levelBtn" type="button" ng-click="deck.generateCards(8)" name="button">Easy</button>
+          <button class="levelBtn" type="button" ng-click="deck.generateCards(16)" name="button">Normal</button>
+          <button class="levelBtn" type="button" ng-click="deck.generateCards(24)" name="button">Pro</button>
+        </div>
+      </div>
+
+      <div class="cards clear">
+@@ -35,12 +36,12 @@ <h2 id="winBanner" ng-show="deck.won">You won in {{deck.moves}} moves!</h2>
+            <img class="monster" src="{{card.url}}" alt=""  />
+          </div>
+          <div class="back">
+            <img class="logo" src="assets/logo.png"  alt=""  />
+            <img class="logo" src="assets/pokemon_back_image.png"  alt=""  />
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- end of container div -->
+
+  </body>
+</html>
+</html> 
+  4  
+memorygame.js
+@@ -72,7 +72,7 @@ Deck.prototype.generateCards = function(numCards) {
+
+  for(var j = 0; j < 2; j++) {
+    for (var i = 1; i <= (numCards / 2); i++) {
+      var url = "assets/monsters-" + i + ".png"
+      var url = "assets/pokemon" + i + ".png"
+      cards.push(new Card(url, false, false));
+    };
+  }
+@@ -85,4 +85,4 @@ Deck.prototype.generateCards = function(numCards) {
+    this.currentCards.push(cards[randomIndex]);
+    cards.splice(randomIndex, 1);
+  }
+}
+} 
+ 12  
+playing_level.html
+@@ -0,0 +1,12 @@
+<h1>Easy</h1>
+<p>{{deck.currentCards}}</p>
+<div class="cards clear">
+  <div ng-repeat="card in deck.currentCards" ng-click="revealCard(card)" ng-class="{open: card.open}" class="card">
+    <div class="front">
+      <img class="monster" src="{{card.url}}" alt=""  />
+    </div>
+    <div class="back">
+      <img class="logo" src="assets/pokemon_back_image.png"  alt=""  />
+    </div>
+  </div>
+</div>
+  49  
+style.css
+@@ -3,10 +3,15 @@
+*************************************/
+body {
+  font-family: sans-serif;
+  /*background-color: #f44336;*/
+  background-image: url('assets/red_pokeball.png');
+  /*background-repeat: no-repeat;*/
+  height: 100%;
+  /*background-size: cover;*/
+}
+.container {
+  margin: auto;
+  max-width: 700px;
+  max-width: 600px;
+}
+
+.clear:before, .clear:after {
+@@ -17,6 +22,15 @@ body {
+.clear:after {
+  clear: both;
+}
+/*************************************
+            CARD STYLING
+*************************************/
+.quarter {
+  width: 25%;
+}
+.fifth {
+  width: 20%;
+}
+/*************************************
+          TEXT STYLING
+*************************************/
+@@ -39,7 +53,6 @@ p {
+.levels {
+  text-align: center;
+  margin-bottom: .5em;
+  padding-top: .5em;
+}
+.levelBtn {
+  background: #000;
+@@ -49,12 +62,14 @@ p {
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 1em;
+}
+.levelBtn:focus {
+  outline: none;
+}
+.levelBtn:hover {
+  background: darkblue;
+  background: yellow;
+  color: #000;
+  transition: 0.3s;
+}
+/*************************************
+@@ -78,20 +93,26 @@ p {
+}
+
+.card .front .monster {
+  height: 100%;
+  width: 100%;
+  height: 65%;
+  width: 80%;
+  margin-top: 20%;
+  margin-left: 10%;
+}
+
+.card .back .logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.card .front, .card .back {
+  backface-visibility: hidden;
+  transition: 0.6s;
+  border-radius: 5px;
+}
+
+.card .front {
+@@ -113,6 +134,15 @@ p {
+/*************************************
+              MEDIA QUERIES
+*************************************/
+@media screen and (min-width: 450px) {
+  .card {
+    width: 20%;
+    height: 140px;
+  }
+  .card .front, .card .back {
+    height: 140px;
+  }
+}
+@media screen and (min-width: 600px) {
+  h2 span:first-child {
+    float: left;
+@@ -123,4 +153,11 @@ p {
+  #message-div {
+    height: 40px;
+  }
+}
+  .card {
+    width: 16.6666667%;
+    height: 150px;
+  }
+  .card .front, .card .back {
+    height: 150px;
+  } margin-bottom: 20px;
+}
+.card {
+  -webkit-perspective: 2000px;
+  perspective: 2000px;
+  position: relative;
+  height: 100px;
+@@ -112,32 +113,48 @@ p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+  -webkit-transform: translate(-50%, -50%);
+     -moz-transform: translate(-50%, -50%);
+       -o-transform: translate(-50%, -50%);
+       transform: translate(-50%, -50%);
+}
+
+.card .front, .card .back {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: 0.6s;
+  border-radius: 5px;
+}
+
+.card .front {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+     -moz-transform: rotateY(180deg);
+       -o-transform: rotateY(180deg);
+          transform: rotateY(180deg);
+}
+
+.card .back {
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+     -moz-transform: rotateY(0deg);
+       -o-transform: rotateY(0deg);
+          transform: rotateY(0deg);
+}
+
+.card.open .back {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+     -moz-transform: rotateY(180deg);
+       -o-transform: rotateY(180deg);
+          transform: rotateY(180deg);
+}
+
+.card.open .front {
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+     -moz-transform: rotateY(0deg);
+       -o-transform: rotateY(0deg);
+          transform: rotateY(0deg);
+}
